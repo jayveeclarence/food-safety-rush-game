@@ -1,0 +1,1430 @@
+<!DOCTYPE html>
+<html lang="fil">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Food Safety Rush</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Bebas+Neue&display=swap" rel="stylesheet">
+<style>
+/* ══════════════════════════════════════════
+   RESET & ROOT
+══════════════════════════════════════════ */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+
+:root {
+  --bg:       #f0f4f8;
+  --surface:  #ffffff;
+  --surface2: #e8edf3;
+  --border:   #d0d9e4;
+  --text:     #1a2332;
+  --muted:    #6b7a90;
+  --accent:   #154e84;
+  --accent2:  #1a6bbf;
+  --gold:     #d4920a;
+  --gold-lt:  #fef3cd;
+  --green:    #1a7a4a;
+  --green-lt: #d4edda;
+  --red:      #c0392b;
+  --red-lt:   #fde8e6;
+  --shadow:   0 2px 12px rgba(21,78,132,0.10);
+  --shadow-lg:0 8px 32px rgba(21,78,132,0.14);
+  --radius:   12px;
+  --font:     'Nunito', sans-serif;
+  --display:  'Bebas Neue', sans-serif;
+}
+
+html, body {
+  height: 100%;
+  font-family: var(--font);
+  background: var(--bg);
+  color: var(--text);
+  overflow: hidden;
+  touch-action: manipulation;
+}
+
+/* ══════════════════════════════════════════
+   SCREEN SYSTEM
+══════════════════════════════════════════ */
+.screen {
+  display: none;
+  position: fixed;
+  inset: 0;
+  flex-direction: column;
+  align-items: center;
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+.screen.active { display: flex; }
+
+/* ══════════════════════════════════════════
+   SHARED COMPONENTS
+══════════════════════════════════════════ */
+.card-box {
+  background: var(--surface);
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  padding: 28px 28px;
+  width: 100%;
+  max-width: 480px;
+}
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  border: none;
+  border-radius: 10px;
+  font-family: var(--font);
+  font-weight: 800;
+  font-size: 15px;
+  letter-spacing: .5px;
+  cursor: pointer;
+  transition: all .18s;
+  padding: 13px 22px;
+  width: 100%;
+}
+.btn-primary { background: var(--accent); color: #fff; }
+.btn-primary:hover { background: var(--accent2); transform: translateY(-1px); box-shadow: var(--shadow); }
+.btn-secondary { background: var(--surface2); color: var(--text); border: 1.5px solid var(--border); }
+.btn-secondary:hover { border-color: var(--accent); color: var(--accent); }
+.btn-ghost { background: transparent; color: var(--muted); font-size: 13px; width: auto; padding: 8px 12px; }
+.btn-ghost:hover { color: var(--accent); }
+.btn:active { transform: scale(0.97); }
+
+.logo-text {
+  font-family: var(--display);
+  letter-spacing: 3px;
+  color: var(--accent);
+  line-height: 1;
+}
+
+/* ══════════════════════════════════════════
+   1. ENTRY / NAME SCREEN
+══════════════════════════════════════════ */
+#entry-screen {
+  background: linear-gradient(160deg, #e8f0fa 0%, #f0f4f8 60%, #fef9ec 100%);
+  justify-content: center;
+  padding: 20px 16px;
+}
+
+.entry-header {
+  text-align: center;
+  margin-bottom: 24px;
+}
+.entry-logo { font-size: clamp(38px, 8vw, 56px); }
+.entry-tagline {
+  font-size: 13px;
+  color: var(--muted);
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  margin-top: 4px;
+}
+
+.field-label {
+  display: block;
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--muted);
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  margin-bottom: 7px;
+}
+.field-input {
+  width: 100%;
+  background: var(--bg);
+  border: 1.5px solid var(--border);
+  border-radius: 8px;
+  padding: 12px 14px;
+  font-family: var(--font);
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--text);
+  outline: none;
+  transition: border .18s;
+}
+.field-input:focus { border-color: var(--accent); background: #fff; }
+.field-hint {
+  font-size: 11.5px;
+  color: var(--muted);
+  margin-top: 6px;
+}
+.field-err {
+  color: var(--red);
+  font-size: 12.5px;
+  font-weight: 700;
+  margin-top: 8px;
+  min-height: 16px;
+}
+
+/* ══════════════════════════════════════════
+   2. INSTRUCTIONS SCREEN
+══════════════════════════════════════════ */
+#instructions-screen {
+  background: var(--bg);
+  padding: 20px 16px 32px;
+  justify-content: flex-start;
+}
+
+.instructions-header {
+  width: 100%;
+  max-width: 520px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 20px;
+}
+.instructions-header h2 {
+  font-size: 22px;
+  font-weight: 900;
+  color: var(--accent);
+}
+
+.instr-section {
+  width: 100%;
+  max-width: 520px;
+  background: var(--surface);
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius);
+  padding: 20px;
+  margin-bottom: 14px;
+  box-shadow: var(--shadow);
+}
+.instr-section h3 {
+  font-size: 14px;
+  font-weight: 800;
+  color: var(--accent);
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  margin-bottom: 12px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.instr-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  margin-bottom: 10px;
+  font-size: 14px;
+  line-height: 1.5;
+}
+.instr-row:last-child { margin-bottom: 0; }
+.instr-icon {
+  font-size: 20px;
+  flex-shrink: 0;
+  width: 28px;
+  text-align: center;
+}
+.instr-key {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--accent);
+  color: #fff;
+  border-radius: 6px;
+  font-weight: 900;
+  font-size: 14px;
+  padding: 3px 10px;
+  letter-spacing: 1px;
+}
+.phase-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: var(--surface2);
+  border: 1.5px solid var(--border);
+  border-radius: 20px;
+  padding: 4px 12px;
+  font-size: 13px;
+  font-weight: 700;
+  margin: 3px 3px 3px 0;
+}
+.phase-chip.p1 { border-color: var(--green); color: var(--green); background: var(--green-lt); }
+.phase-chip.p2 { border-color: var(--gold); color: var(--gold); background: var(--gold-lt); }
+.phase-chip.p3 { border-color: var(--red); color: var(--red); background: var(--red-lt); }
+
+.instr-bottom { width: 100%; max-width: 520px; display: flex; flex-direction: column; gap: 8px; }
+
+/* ══════════════════════════════════════════
+   3. MAIN MENU
+══════════════════════════════════════════ */
+#menu-screen {
+  background: linear-gradient(160deg, #e8f0fa 0%, #f0f4f8 60%, #fef9ec 100%);
+  justify-content: center;
+  padding: 20px 16px;
+}
+
+.menu-hero {
+  text-align: center;
+  margin-bottom: 28px;
+}
+.menu-logo { font-size: clamp(42px, 9vw, 64px); }
+.menu-tagline { font-size: 12px; color: var(--muted); letter-spacing: 2.5px; text-transform: uppercase; margin-top: 4px; }
+.menu-welcome { font-size: 15px; color: var(--muted); margin-top: 10px; }
+.menu-welcome strong { color: var(--accent); font-weight: 800; }
+
+.menu-btns { display: flex; flex-direction: column; gap: 10px; width: 100%; max-width: 340px; }
+
+/* ══════════════════════════════════════════
+   4. LEADERBOARD SCREEN
+══════════════════════════════════════════ */
+#lb-screen {
+  background: var(--bg);
+  padding: 20px 16px 32px;
+  justify-content: flex-start;
+}
+
+.lb-header {
+  width: 100%;
+  max-width: 520px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 16px;
+}
+.lb-header h2 { font-size: 22px; font-weight: 900; color: var(--accent); }
+.lb-refresh-btn {
+  background: var(--surface2);
+  border: 1.5px solid var(--border);
+  border-radius: 8px;
+  padding: 7px 14px;
+  font-family: var(--font);
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--muted);
+  cursor: pointer;
+  transition: all .18s;
+}
+.lb-refresh-btn:hover { border-color: var(--accent); color: var(--accent); }
+
+.lb-box {
+  width: 100%;
+  max-width: 520px;
+  background: var(--surface);
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  overflow: hidden;
+  margin-bottom: 16px;
+}
+.lb-col-header {
+  display: flex;
+  align-items: center;
+  padding: 10px 16px;
+  background: var(--surface2);
+  border-bottom: 1.5px solid var(--border);
+  font-size: 11px;
+  font-weight: 800;
+  color: var(--muted);
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+}
+.lb-col-rank { width: 48px; text-align: center; }
+.lb-col-name { flex: 1; }
+.lb-col-score { width: 80px; text-align: right; }
+
+.lb-row {
+  display: flex;
+  align-items: center;
+  padding: 12px 16px;
+  border-bottom: 1px solid var(--border);
+  font-size: 14px;
+  transition: background .15s;
+}
+.lb-row:last-child { border-bottom: none; }
+.lb-row:hover { background: var(--bg); }
+.lb-row.you { background: #eaf2fb; }
+.lb-row.you .lb-col-name { color: var(--accent); font-weight: 800; }
+
+.lb-rank-cell { width: 48px; text-align: center; font-weight: 800; font-size: 16px; }
+.lb-name-cell { flex: 1; font-weight: 700; }
+.lb-score-cell { width: 80px; text-align: right; font-weight: 800; color: var(--accent); font-size: 15px; }
+
+.lb-empty { padding: 32px; text-align: center; color: var(--muted); font-size: 14px; }
+.lb-loading { padding: 32px; text-align: center; color: var(--muted); font-size: 14px; }
+
+.lb-bottom { width: 100%; max-width: 520px; display: flex; flex-direction: column; gap: 8px; }
+.lb-note { font-size: 12px; color: var(--muted); text-align: center; }
+
+/* ══════════════════════════════════════════
+   5. GAME SCREEN
+══════════════════════════════════════════ */
+#game-screen {
+  background: #1a2332;
+  padding: 0;
+  justify-content: flex-start;
+  align-items: stretch;
+  overflow: hidden;
+}
+
+/* HUD */
+#hud {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 14px;
+  background: var(--surface);
+  border-bottom: 2px solid var(--border);
+  flex-shrink: 0;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.hud-block { display: flex; flex-direction: column; align-items: center; min-width: 60px; }
+.hud-label { font-size: 10px; font-weight: 700; color: var(--muted); letter-spacing: 1px; text-transform: uppercase; }
+.hud-value { font-family: var(--display); font-size: 22px; letter-spacing: 1px; color: var(--accent); line-height: 1.1; }
+.hud-risk { font-size: 18px; line-height: 1.2; }
+.hud-phase-badge {
+  background: var(--accent);
+  color: #fff;
+  border-radius: 20px;
+  padding: 3px 12px;
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 1px;
+  text-align: center;
+}
+
+/* VIEWPORT */
+#viewport {
+  position: relative;
+  flex: 1;
+  background: #e8edf3;
+  overflow: hidden;
+  min-height: 0;
+}
+
+/* BELTS */
+.belt {
+  position: absolute;
+  left: 0; right: 0;
+  height: 100px;
+  background: #2c3e55;
+  border-top: 3px solid #1a2a3a;
+  border-bottom: 3px solid #1a2a3a;
+  transition: opacity 0.6s;
+}
+.belt.inactive { opacity: 0.2; }
+#belt-0 { top: 10px; }
+#belt-1 { top: 155px; }
+#belt-2 { top: 300px; }
+
+.belt-track {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 100%;
+  height: 6px;
+  background: repeating-linear-gradient(90deg, #f0c040 0, #f0c040 22px, transparent 22px, transparent 44px);
+  animation: belt-move 0.5s linear infinite;
+}
+@keyframes belt-move { from { background-position: 0; } to { background-position: 44px; } }
+
+/* TILE CARDS */
+.tile-card {
+  position: absolute;
+  width: 210px;
+  background: var(--surface);
+  border: 2px solid var(--border);
+  border-radius: 10px;
+  padding: 8px 10px 6px;
+  box-shadow: 0 3px 10px rgba(0,0,0,0.15);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--text);
+  line-height: 1.4;
+  /* NO fixed height — card grows to fit its text */
+}
+.tile-card.active-target {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 2px var(--accent), 0 4px 14px rgba(21,78,132,0.25);
+}
+.tile-hint {
+  font-size: 9px;
+  color: var(--muted);
+  margin-top: 4px;
+  letter-spacing: .5px;
+}
+
+/* PESTS */
+.pest {
+  position: absolute;
+  padding: 5px 12px;
+  background: #fff3cd;
+  border: 2px solid #f0c040;
+  border-radius: 20px;
+  font-size: 13px;
+  font-weight: 800;
+  color: #7a5000;
+  cursor: pointer;
+  z-index: 10;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+  white-space: nowrap;
+  transition: background .1s;
+}
+.pest:hover, .pest:active { background: var(--red-lt); border-color: var(--red); color: var(--red); }
+
+/* KEY HINTS (desktop) */
+.key-row {
+  position: absolute;
+  bottom: 10px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 12px;
+  z-index: 5;
+  pointer-events: none;
+}
+.key-chip {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: rgba(255,255,255,0.85);
+  border: 1.5px solid var(--border);
+  border-radius: 20px;
+  padding: 5px 12px;
+  font-size: 11px;
+  font-weight: 800;
+  color: var(--text);
+  backdrop-filter: blur(4px);
+}
+.key-chip span { background: var(--accent); color: #fff; border-radius: 4px; padding: 1px 7px; font-size: 12px; }
+
+/* MOBILE TAP BUTTONS */
+#mobile-btns {
+  display: none;
+  position: absolute;
+  bottom: 0;
+  left: 0; right: 0;
+  height: 64px;
+  z-index: 15;
+}
+.mob-btn {
+  position: absolute;
+  bottom: 0;
+  width: 50%;
+  height: 64px;
+  border: none;
+  font-family: var(--display);
+  font-size: 20px;
+  letter-spacing: 2px;
+  cursor: pointer;
+  transition: opacity .1s;
+}
+.mob-btn:active { opacity: 0.8; }
+#mob-safe { left: 0; background: var(--green); color: #fff; border-radius: 0 0 0 0; }
+#mob-hazard { right: 0; background: var(--red); color: #fff; }
+
+@media (hover: none) and (pointer: coarse) {
+  .key-row { display: none; }
+  #mobile-btns { display: block; }
+  #viewport { padding-bottom: 64px; }
+}
+
+/* PHASE BANNER */
+#phase-banner {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 30;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.3s;
+  text-align: center;
+}
+#phase-banner.visible { opacity: 1; }
+.phase-banner-inner {
+  background: var(--surface);
+  border: 2.5px solid var(--accent);
+  border-radius: 14px;
+  padding: 16px 32px;
+  box-shadow: var(--shadow-lg);
+}
+.phase-banner-label { font-size: 11px; color: var(--muted); letter-spacing: 2px; text-transform: uppercase; }
+.phase-banner-title { font-family: var(--display); font-size: 28px; letter-spacing: 3px; color: var(--accent); margin-top: 2px; }
+
+/* GAME OVER OVERLAY */
+#gameover-overlay {
+  display: none;
+  position: absolute;
+  inset: 0;
+  background: rgba(240,244,248,0.96);
+  z-index: 40;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  text-align: center;
+}
+#gameover-overlay.visible { display: flex; }
+.go-emoji { font-size: 52px; margin-bottom: 8px; }
+.go-title { font-family: var(--display); font-size: 36px; letter-spacing: 3px; color: var(--accent); }
+.go-score { font-size: 18px; color: var(--muted); margin-top: 4px; margin-bottom: 20px; }
+.go-score strong { color: var(--accent); font-size: 24px; }
+.go-btns { display: flex; flex-direction: column; gap: 10px; width: 100%; max-width: 300px; }
+
+/* ══════════════════════════════════════════
+   UTILITIES
+══════════════════════════════════════════ */
+.field-select {
+  width: 100%;
+  background: var(--bg);
+  border: 1.5px solid var(--border);
+  border-radius: 8px;
+  padding: 12px 14px;
+  font-family: var(--font);
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--text);
+  outline: none;
+  transition: border .18s;
+  appearance: none;
+  -webkit-appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%236b7a90' stroke-width='2.5'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 14px center;
+  cursor: pointer;
+}
+.field-select:focus { border-color: var(--accent); background-color: #fff; }
+
+/* Plant badge in HUD */
+.hud-plant-p2 { background: #1a6bbf; }
+.hud-plant-p3 { background: #7b2d8b; }
+
+/* Leaderboard tabs */
+.lb-tabs {
+  width: 100%;
+  max-width: 520px;
+  display: flex;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+.lb-tab {
+  flex: 1;
+  padding: 10px;
+  border: 1.5px solid var(--border);
+  border-radius: 8px;
+  background: var(--surface2);
+  font-family: var(--font);
+  font-size: 14px;
+  font-weight: 800;
+  color: var(--muted);
+  cursor: pointer;
+  transition: all .18s;
+  text-align: center;
+}
+.lb-tab.active-p2 { background: #1a6bbf; color: #fff; border-color: #1a6bbf; }
+.lb-tab.active-p3 { background: #7b2d8b; color: #fff; border-color: #7b2d8b; }
+.lb-tab:not(.active-p2):not(.active-p3):hover { border-color: var(--accent); color: var(--accent); }
+.mt-16 { margin-top: 16px; }
+.center { text-align: center; }
+.divider { width: 100%; height: 1px; background: var(--border); margin: 10px 0; }
+
+@media (max-width: 400px) {
+  .card-box { padding: 20px 16px; }
+  .tile-card { width: 165px; font-size: 10px; }
+}
+</style>
+</head>
+<body>
+
+<!-- ══════════════════════════════════════════
+     SCREEN 1: ENTRY (Name Input)
+══════════════════════════════════════════ -->
+<div class="screen active" id="entry-screen">
+  <div class="entry-header">
+    <div class="logo-text entry-logo">🏭 Food Safety Rush</div>
+    <div class="entry-tagline">Production Compliance Simulator</div>
+  </div>
+
+  <div class="card-box">
+    <label class="field-label">Ilagay ang Iyong Pangalan</label>
+    <input class="field-input" id="entry-name" type="text"
+      placeholder="e.g. Juan_DelaCruz"
+      autocomplete="off" autocorrect="off" spellcheck="false"
+      inputmode="text"
+      onkeydown="if(event.key==='Enter')doEnter()">
+    <div class="field-hint">Format: <strong>Pangalan_Apelyido</strong> — walang espasyo, gumamit ng underscore ( _ )</div>
+
+    <div style="margin-top:16px;">
+      <label class="field-label">Base Plant</label>
+      <select class="field-select" id="entry-plant">
+        <option value="">— Pumili ng Plant —</option>
+        <option value="P2">🏭 P2</option>
+        <option value="P3">🏭 P3</option>
+      </select>
+    </div>
+
+    <div class="field-err" id="entry-err"></div>
+
+    <div class="mt-12">
+      <button class="btn btn-primary" onclick="doEnter()">✔ Pumasok sa Pasilidad</button>
+    </div>
+    <div class="mt-12">
+      <button class="btn btn-secondary" onclick="showScreen('lb-screen');fetchLeaderboard()">🏆 Tingnan ang Leaderboard</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════
+     SCREEN 2: INSTRUCTIONS
+══════════════════════════════════════════ -->
+<div class="screen" id="instructions-screen">
+  <div class="instructions-header">
+    <h2>📋 Paano Maglaro</h2>
+    <div class="menu-welcome" style="font-size:13px;">Handa ka na, <strong id="instr-name-display">—</strong>! <span id="instr-plant-badge" style="display:inline-block;padding:2px 10px;border-radius:12px;font-size:11px;font-weight:800;color:#fff;background:#1a6bbf;margin-left:4px;"></span></div>
+  </div>
+
+  <div class="instr-section">
+    <h3>🎯 Layunin ng Laro</h3>
+    <div class="instr-row">
+      <span class="instr-icon">🎮</span>
+      <span>Ikaw ay isang <strong>Food Safety Inspector</strong>. May mga observation cards na darating mula sa kaliwa sa conveyor belt. Kailangan mong <strong>husgahan</strong> ang bawat isa — ligtas ba ito o hazard?</span>
+    </div>
+    <div class="instr-row">
+      <span class="instr-icon">✅</span>
+      <span>Ang tamang sagot ay nagbibigay ng <strong>+15 puntos</strong>. Ang mali ay nag-aalis ng <strong>−10 puntos</strong> at isang puso.</span>
+    </div>
+    <div class="instr-row">
+      <span class="instr-icon">🐛</span>
+      <span><strong>I-click o i-tap</strong> ang mga nakakalat na insekto (bug/fly) para mawala — kundi, mawawalan ka ng puso. Bawat napatay na insekto = <strong>+25 puntos</strong>.</span>
+    </div>
+  </div>
+
+  <div class="instr-section">
+    <h3>⌨️ Mga Kontrol</h3>
+    <div class="instr-row">
+      <span class="instr-icon">💻</span>
+      <span><strong>Sa Computer:</strong> &nbsp;<span class="instr-key">A</span> = Safe Practice &nbsp;&nbsp; <span class="instr-key">D</span> = Hazard</span>
+    </div>
+    <div class="instr-row">
+      <span class="instr-icon">📱</span>
+      <span><strong>Sa Cellphone:</strong> I-tap ang <span style="color:var(--green);font-weight:800;">SAFE</span> o <span style="color:var(--red);font-weight:800;">HAZARD</span> na pindutan sa ibaba ng screen.</span>
+    </div>
+    <div class="instr-row">
+      <span class="instr-icon">⭐</span>
+      <span>Ang card na may <strong>asul na border</strong> ang dapat husgahan — ito ang pinaka-malapit sa kanan.</span>
+    </div>
+  </div>
+
+  <div class="instr-section">
+    <h3>📈 Antas ng Kahirapan</h3>
+    <div class="instr-row">
+      <span class="instr-icon"></span>
+      <div>
+        <div class="phase-chip p1">⭐ Antas 1 — 1 Belt (0–59 pts)</div>
+        <div class="phase-chip p2">⭐⭐ Antas 2 — 2 Belts (60–159 pts)</div>
+        <div class="phase-chip p3">⭐⭐⭐ Antas 3 — 3 Belts, Mabilis! (160+ pts)</div>
+      </div>
+    </div>
+    <div class="instr-row">
+      <span class="instr-icon">❤️</span>
+      <span>May <strong>3 puso</strong> ka. Kung mawala lahat, <strong>Recall Issued!</strong> Manalo ka kapag nakaabot ng <strong>300 puntos</strong>.</span>
+    </div>
+  </div>
+
+  <div class="instr-section">
+    <h3>🏆 Leaderboard</h3>
+    <div class="instr-row">
+      <span class="instr-icon">📊</span>
+      <span>Ang iyong pinakamataas na score ay nire-record sa online leaderboard. Ino-update ito pagkatapos ng bawat laro.</span>
+    </div>
+  </div>
+
+  <div class="instr-bottom">
+    <button class="btn btn-primary" onclick="startGame()">▶ Simulan na ang Laro!</button>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════
+     SCREEN 3: MAIN MENU
+══════════════════════════════════════════ -->
+<div class="screen" id="menu-screen">
+  <div class="menu-hero">
+    <div class="logo-text menu-logo">🏭 Food Safety Rush</div>
+    <div class="menu-tagline">Production Compliance Simulator</div>
+    <div class="menu-welcome">Kumusta, <strong id="menu-name-display">—</strong>!</div>
+  </div>
+
+  <div class="menu-btns">
+    <button class="btn btn-primary" onclick="startGame()">▶ Maglaro</button>
+    <button class="btn btn-secondary" onclick="showScreen('instructions-screen')">📋 Paano Maglaro</button>
+    <button class="btn btn-secondary" onclick="showScreen('lb-screen');fetchLeaderboard()">🏆 Leaderboard</button>
+    <button class="btn btn-ghost" onclick="showScreen('entry-screen')">↩ Palitan ang Pangalan</button>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════
+     SCREEN 4: LEADERBOARD
+══════════════════════════════════════════ -->
+<div class="screen" id="lb-screen">
+  <div class="lb-header">
+    <h2>🏆 Top 10 Players</h2>
+    <button class="lb-refresh-btn" onclick="fetchLeaderboard()">🔄 I-refresh</button>
+  </div>
+
+  <div class="lb-tabs">
+    <button class="lb-tab active-p2" id="tab-p2" onclick="switchLbTab('P2')">🏭 P2</button>
+    <button class="lb-tab" id="tab-p3" onclick="switchLbTab('P3')">🏭 P3</button>
+  </div>
+
+  <div class="lb-box">
+    <div class="lb-col-header">
+      <span class="lb-col-rank">Rank</span>
+      <span class="lb-col-name">Pangalan</span>
+      <span class="lb-col-score">Score</span>
+    </div>
+    <div id="lb-list"><div class="lb-loading">Nilo-load ang leaderboard…</div></div>
+  </div>
+
+  <div class="lb-note" id="lb-status"></div>
+
+  <div class="lb-bottom">
+    <button class="btn btn-primary" onclick="startGame()">▶ Maglaro</button>
+    <button class="btn btn-secondary" onclick="currentUser ? showScreen('menu-screen') : showScreen('entry-screen')">← Bumalik</button>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════
+     SCREEN 5: GAME
+══════════════════════════════════════════ -->
+<div class="screen" id="game-screen">
+
+  <!-- HUD -->
+  <div id="hud">
+    <div class="hud-block">
+      <div class="hud-label">Score</div>
+      <div class="hud-value" id="hud-score">0</div>
+    </div>
+    <div class="hud-block">
+      <div class="hud-label">Buhay</div>
+      <div class="hud-risk" id="hud-risk">❤️❤️❤️</div>
+    </div>
+    <div class="hud-block">
+      <div class="hud-label">Plant</div>
+      <div class="hud-phase-badge" id="hud-plant">—</div>
+    </div>
+    <div class="hud-block" style="align-items:flex-end;">
+      <div class="hud-label">Antas</div>
+      <div class="hud-phase-badge" id="hud-phase">Antas 1</div>
+    </div>
+  </div>
+
+  <!-- GAME VIEWPORT -->
+  <div id="viewport">
+    <div class="belt" id="belt-0"><div class="belt-track"></div></div>
+    <div class="belt inactive" id="belt-1"><div class="belt-track"></div></div>
+    <div class="belt inactive" id="belt-2"><div class="belt-track"></div></div>
+
+    <!-- Phase banner -->
+    <div id="phase-banner">
+      <div class="phase-banner-inner">
+        <div class="phase-banner-label">Sumusulong sa</div>
+        <div class="phase-banner-title" id="phase-banner-text">—</div>
+      </div>
+    </div>
+
+    <!-- Desktop key hints -->
+    <div class="key-row">
+      <div class="key-chip"><span>A</span> Safe Practice</div>
+      <div class="key-chip"><span>D</span> Hazard</div>
+    </div>
+
+    <!-- Mobile tap buttons -->
+    <div id="mobile-btns">
+      <button class="mob-btn" id="mob-safe" onpointerdown="handleKey('a')">✅ SAFE</button>
+      <button class="mob-btn" id="mob-hazard" onpointerdown="handleKey('d')">⚠️ HAZARD</button>
+    </div>
+
+    <!-- Game over overlay -->
+    <div id="gameover-overlay">
+      <div class="go-emoji" id="go-emoji">🚨</div>
+      <div class="go-title" id="go-title">—</div>
+      <div class="go-score" id="go-score">—</div>
+      <div class="go-btns">
+        <button class="btn btn-primary" onclick="startGame()">▶ Maglaro Ulit</button>
+        <button class="btn btn-secondary" onclick="showScreen('lb-screen');fetchLeaderboard()">🏆 Tingnan ang Leaderboard</button>
+        <button class="btn btn-ghost" onclick="showScreen('menu-screen')">← Menu</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════
+     JAVASCRIPT
+══════════════════════════════════════════ -->
+<script>
+'use strict';
+
+/* ─── OBSERVATION POOL ─────────────────────────────── */
+const POOL = [
+  {text:"Lahat ng hairnet ay wastong suot — walang namamalaglag na buhok sa linya",type:"positive"},
+  {text:"Sugat ay nakatakip ng blue metal-detectable band-aid at glove sa ibabaw",type:"positive"},
+  {text:"Sanitizer concentration naka-log at nasa loob ng 50–200 ppm chlorine spec para sa food contact surfaces at equipment",type:"positive"},
+  {text:"Pinalitan ng gloves pagkatapos hawakan ang raw material bago mag-packaging",type:"positive"},
+  {text:"Naghugas ng kamay nang 20 segundo bago bumalik sa production area",type:"positive"},
+  {text:"Pest bait station nasuri at naka-sign off — walang naitalang aktibidad ng peste",type:"positive"},
+  {text:"Temperature log ng chiller kumpleto: produkto nasa 2–4°C ayon sa spec",type:"positive"},
+  {text:"Production line nalinis at nasanitize sa pagitan ng allergen changeover",type:"positive"},
+  {text:"Incoming ingredients naka-quarantine at naka-hold habang hinihintay ang QC release",type:"positive"},
+  {text:"Nagsuot ng GMP gown bago pumasok sa high-care production zone",type:"positive"},
+  {text:"Alahas (relo at singsing) suot ng empleyado sa itaas ng open production line",type:"hazard"},
+  {text:"Nakita ang empleyado na gumagamit ng cellphone habang humahawak ng bukas na produkto",type:"hazard"},
+  {text:"Ingredient bin naiwang bukas at walang takip sa mataong koridor ng produksyon",type:"hazard"},
+  {text:"Unlabeled spray canister nakaimbak sa itaas ng food contact surface",type:"hazard"},
+  {text:"Condensation tumutulong mula sa overhead pipe patungo sa packaging zone",type:"hazard"},
+  {text:"Empleyado bumalik sa production area nang hindi nagpalit ng gloves pagkatapos ng CR",type:"hazard"},
+  {text:"Rework product nailagay sa linya nang walang identity label o date mark",type:"hazard"},
+  {text:"Forklift pumasok sa allergen-controlled zone nang walang decontamination",type:"hazard"},
+  {text:"Cleaning chemicals nakaimbak sa parehong lugar ng raw food ingredients",type:"hazard"},
+  {text:"Expired na raw materials nakalagay sa production area nang walang hold tag",type:"hazard"},
+];
+
+/* ─── PHASE CONFIG ─────────────────────────────────── */
+// belts=active lanes, speed=px/tick, pestMs=pest interval, gap=min gap between cards, nextAt=score to advance
+const PHASES = [
+  { belts:1, speed:1.1, pestMs:7000, gap:100, nextAt:60,  label:'Antas 1 — 1 Belt' },
+  { belts:2, speed:1.5, pestMs:4800, gap:88,  nextAt:160, label:'Antas 2 — 2 Belts!' },
+  { belts:3, speed:1.9, pestMs:3200, gap:78,  nextAt:300, label:'Antas 3 — Buong Bilis!' },
+];
+
+/* ─── GOOGLE SHEET CONFIG ──────────────────────────── */
+const FORM_URL     = 'https://docs.google.com/forms/d/e/1FAIpQLSdRaKerr_NsKTl0SfdSMjX5f7nlUw9N7J0nrW430lL7bQqVaw/formResponse';
+const ENTRY_NAME   = 'entry.1739922276';
+const ENTRY_PLANT  = 'entry.81948050';
+const ENTRY_SCORE  = 'entry.844848198';
+const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxqgVnhtRVZTF-NlEOF6cK_XGIQkTIHz--m8xlUZfEF6lhZI5iRaZiOb7tPg4xtJXIH/exec';
+const SHEET_ID     = '1gwixNt73KiUGPak5oqGvy_T_IGjrxdq2YgOhpS8yIkI';
+const SHEET_PUB_ID = '2PACX-1vTJgdZ_SYdMYmNYr_ipstHgpgfk_WYc1zs72FeuZrE9Th2AdXMcwhEPm4qRYlnjQHSm4L7hfmpghjxS';
+const SHEET_GID    = '1009757920';
+
+/* ─── CONSTANTS ────────────────────────────────────── */
+const CARD_W    = 210;
+const BELT_H    = 100;   // must match CSS .belt height
+const LANE_Y    = [10, 155, 300]; // belt top positions, must match CSS #belt-0/1/2
+const TICK_MS   = 20;
+
+/* ─── STATE ────────────────────────────────────────── */
+let currentUser  = null;   // { username, name, plant }
+let activeLbTab  = 'P2';   // which leaderboard tab is shown
+let lbDataCache  = null;   // cached raw data from Apps Script
+let score        = 0;
+let risk         = 3;
+let running      = false;
+let currentPhase = 0;
+let lanes        = [[], [], []];   // lanes[l] = array of card objects
+let pests        = [];
+let laneCooldown = [0, 0, 0];
+let poolQueue    = [];
+let gameLoop     = null;
+let pestInterval = null;
+
+/* ─── SCREEN MANAGER ───────────────────────────────── */
+function showScreen(id) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+}
+
+/* ─── ENTRY ────────────────────────────────────────── */
+function doEnter() {
+  const raw   = document.getElementById('entry-name').value.trim();
+  const plant = document.getElementById('entry-plant').value;
+  const err   = document.getElementById('entry-err');
+
+  if (!raw) { err.textContent = 'Pakilagay ang iyong pangalan.'; return; }
+  if (!/^[A-Za-zÀ-ÖØ-öø-ÿ]+_[A-Za-zÀ-ÖØ-öø-ÿ]+$/.test(raw)) {
+    err.textContent = 'Format: Pangalan_Apelyido — walang espasyo, gumamit ng underscore ( _ )';
+    return;
+  }
+  if (!plant) { err.textContent = 'Pumili ng Base Plant (P2 o P3).'; return; }
+
+  err.textContent = '';
+  const [first, last] = raw.split('_');
+  const display = first + ' ' + last;
+  currentUser = { username: raw, name: display, plant };
+
+  // Update all name/plant displays
+  document.getElementById('menu-name-display').textContent = display;
+  document.getElementById('instr-name-display').textContent = display;
+  const badge = document.getElementById('instr-plant-badge');
+  badge.textContent = plant;
+  badge.style.background = plant === 'P2' ? '#1a6bbf' : '#7b2d8b';
+
+  // Pre-select correct leaderboard tab for player's plant
+  activeLbTab = plant;
+
+  document.getElementById('entry-name').value = '';
+  document.getElementById('entry-plant').value = '';
+  showScreen('instructions-screen');
+}
+
+/* ─── LEADERBOARD: FETCH ────────────────────────────── */
+function fetchLeaderboard() {
+  const list   = document.getElementById('lb-list');
+  const status = document.getElementById('lb-status');
+  list.innerHTML     = '<div class="lb-loading">⏳ Nilo-load ang leaderboard…</div>';
+  status.textContent = '';
+  lbDataCache = null;
+
+  // Clean up any previous script tag
+  const old = document.getElementById('__lb_script');
+  if (old) old.remove();
+
+  const cbName = '__lbCb_' + Date.now();
+
+  // Timeout: if Apps Script JSONP doesn't fire in 6s, try CSV fallback
+  const timer = setTimeout(() => {
+    if (!window[cbName]) return;
+    delete window[cbName];
+    const s = document.getElementById('__lb_script');
+    if (s) s.remove();
+    fetchLeaderboardCSV(); // fallback
+  }, 6000);
+
+  window[cbName] = function(data) {
+    clearTimeout(timer);
+    delete window[cbName];
+    const s = document.getElementById('__lb_script');
+    if (s) s.remove();
+    handleLbData(data);
+  };
+
+  const script  = document.createElement('script');
+  script.id     = '__lb_script';
+  script.src    = APPS_SCRIPT_URL + '?callback=' + cbName + '&t=' + Date.now();
+  script.onerror = () => {
+    clearTimeout(timer);
+    if (window[cbName]) delete window[cbName];
+    fetchLeaderboardCSV(); // fallback to CSV on script error
+  };
+  document.body.appendChild(script);
+}
+
+// Fallback: gviz JSONP using the published sheet e/ ID — works from file://
+function fetchLeaderboardCSV() {
+  const list   = document.getElementById('lb-list');
+  const status = document.getElementById('lb-status');
+  list.innerHTML = '<div class="lb-loading">⏳ Sinusubukang alternatibong paraan…</div>';
+
+  const old = document.getElementById('__csv_script');
+  if (old) old.remove();
+
+  const cbName = '__csvCb_' + Date.now();
+
+  const timer = setTimeout(() => {
+    if (!window[cbName]) return;
+    delete window[cbName];
+    const s = document.getElementById('__csv_script');
+    if (s) s.remove();
+    list.innerHTML = '<div class="lb-empty">Hindi ma-load ang leaderboard.<br>Subukan ulit mamaya.</div>';
+    status.textContent = 'Error: Timeout';
+  }, 10000);
+
+  window[cbName] = function(res) {
+    clearTimeout(timer);
+    delete window[cbName];
+    const s = document.getElementById('__csv_script');
+    if (s) s.remove();
+    try {
+      if (!res || !res.table || !res.table.rows || !res.table.rows.length) {
+        list.innerHTML = '<div class="lb-empty">Wala pang nagrehistro. Ikaw ang maging una!</div>';
+        return;
+      }
+      // cols: 0=Timestamp, 1=Name, 2=Score, 3=Base Plant
+      const best = {};
+      for (const row of res.table.rows) {
+        if (!row.c || row.c.length < 4) continue;
+        const name  = row.c[1] && row.c[1].v != null ? String(row.c[1].v).trim() : '';
+        const score = row.c[2] && row.c[2].v != null ? parseInt(row.c[2].v, 10) : NaN;
+        const plant = row.c[3] && row.c[3].v != null ? String(row.c[3].v).trim().toUpperCase() : '';
+        if (!name || isNaN(score) || !plant) continue;
+        const key = name + '|' + plant;
+        if (!(key in best) || score > best[key].score) best[key] = { name, plant, score };
+      }
+      const result = Object.values(best).sort((a, b) => b.score - a.score);
+      handleLbData(result);
+    } catch(e) {
+      list.innerHTML = '<div class="lb-empty">Error sa pag-parse ng data.</div>';
+      status.textContent = 'Error: ' + e.message;
+    }
+  };
+
+  // Use the published e/ ID with gviz — this endpoint serves JSONP from file://
+  const script  = document.createElement('script');
+  script.id     = '__csv_script';
+  script.src    = 'https://docs.google.com/spreadsheets/d/e/' + SHEET_PUB_ID +
+    '/pubchart?oid=0&format=interactive&tqx=out:json;responseHandler:' + cbName +
+    '&t=' + Date.now();
+
+  // Actually use the correct gviz/tq endpoint with the original sheet ID
+  script.src    = 'https://docs.google.com/spreadsheets/d/' + SHEET_ID +
+    '/gviz/tq?tqx=out:json;responseHandler:' + cbName +
+    '&gid=' + SHEET_GID + '&t=' + Date.now();
+
+  script.onerror = () => {
+    clearTimeout(timer);
+    if (window[cbName]) delete window[cbName];
+    list.innerHTML = '<div class="lb-empty">Hindi ma-load ang leaderboard.<br>Subukan ulit mamaya.</div>';
+    status.textContent = 'Error: Naka-block ang access';
+  };
+  document.body.appendChild(script);
+}
+
+function parseCSV(text) {
+  const rows = [];
+  for (const line of text.split('\n')) {
+    if (!line.trim()) continue;
+    const cols = []; let cur = '', inQ = false;
+    for (let i = 0; i < line.length; i++) {
+      const c = line[i];
+      if (c === '"') { if (inQ && line[i+1] === '"') { cur += '"'; i++; } else inQ = !inQ; }
+      else if (c === ',' && !inQ) { cols.push(cur.trim()); cur = ''; }
+      else cur += c;
+    }
+    cols.push(cur.trim());
+    rows.push(cols);
+  }
+  return rows;
+}
+
+function handleLbData(data) {
+  const list   = document.getElementById('lb-list');
+  const status = document.getElementById('lb-status');
+  if (!Array.isArray(data) || data.length === 0) {
+    list.innerHTML = '<div class="lb-empty">Wala pang nagrehistro. Ikaw ang maging una!</div>';
+    return;
+  }
+  lbDataCache = data;
+  renderLbForTab(activeLbTab);
+  status.textContent = 'Huling na-refresh: ' + new Date().toLocaleTimeString('fil-PH');
+}
+
+function switchLbTab(plant) {
+  activeLbTab = plant;
+  // Update tab styles
+  document.getElementById('tab-p2').className = 'lb-tab' + (plant === 'P2' ? ' active-p2' : '');
+  document.getElementById('tab-p3').className = 'lb-tab' + (plant === 'P3' ? ' active-p3' : '');
+  if (lbDataCache) {
+    renderLbForTab(plant);
+  } else {
+    fetchLeaderboard();
+  }
+}
+
+function renderLbForTab(plant) {
+  const filtered = (lbDataCache || []).filter(r => (r.plant || '').toUpperCase() === plant);
+  const top10    = filtered.slice(0, 10).map(r => [r.name, r.score]);
+  renderLeaderboard(top10, plant);
+}
+
+function renderLeaderboard(top10, plant) {
+  const list = document.getElementById('lb-list');
+  if (!top10.length) {
+    list.innerHTML = `<div class="lb-empty">Wala pang nagrehistro mula sa ${plant || ''}.<br>Ikaw ang maging una!</div>`;
+    return;
+  }
+  const medals = ['🥇','🥈','🥉'];
+  const myName = currentUser ? currentUser.name : '';
+  list.innerHTML = top10.map(([name, sc], i) => {
+    const isYou = myName && name.toLowerCase() === myName.toLowerCase();
+    const rank  = i < 3 ? medals[i] : (i + 1);
+    return `<div class="lb-row${isYou ? ' you' : ''}">
+      <span class="lb-rank-cell">${rank}</span>
+      <span class="lb-name-cell">${esc(name)}${isYou ? ' <span style="font-size:11px;color:var(--accent);">(Ikaw)</span>' : ''}</span>
+      <span class="lb-score-cell">${sc}</span>
+    </div>`;
+  }).join('');
+}
+
+function esc(s) {
+  return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+
+/* ─── SUBMIT SCORE TO GOOGLE FORM ──────────────────── */
+function submitScore(name, plant, sc) {
+  const body = new URLSearchParams();
+  body.append(ENTRY_NAME,  name);
+  body.append(ENTRY_PLANT, plant);
+  body.append(ENTRY_SCORE, String(sc));
+  fetch(FORM_URL, {
+    method: 'POST',
+    mode:   'no-cors',
+    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+    body:   body.toString(),
+  }).catch(() => {});
+}
+
+/* ─── POOL QUEUE ────────────────────────────────────── */
+function nextItem() {
+  if (!poolQueue.length) poolQueue = [...POOL].sort(() => Math.random() - 0.5);
+  return poolQueue.pop();
+}
+
+/* ─── PHASE MANAGEMENT ──────────────────────────────── */
+function cfg() { return PHASES[currentPhase]; }
+
+function applyPhase(phaseIdx, announce) {
+  currentPhase = phaseIdx;
+  const c = cfg();
+
+  for (let l = 0; l < 3; l++) {
+    document.getElementById('belt-' + l).classList.toggle('inactive', l >= c.belts);
+  }
+
+  if (pestInterval) clearInterval(pestInterval);
+  pestInterval = setInterval(spawnPest, c.pestMs);
+
+  document.getElementById('hud-phase').textContent = c.label;
+
+  if (announce) {
+    const b = document.getElementById('phase-banner');
+    document.getElementById('phase-banner-text').textContent = c.label;
+    b.classList.add('visible');
+    setTimeout(() => b.classList.remove('visible'), 2400);
+  }
+}
+
+/* ─── GAME START ────────────────────────────────────── */
+function startGame() {
+  if (!currentUser) { showScreen('entry-screen'); return; }
+
+  // Cleanup
+  if (gameLoop)    clearInterval(gameLoop);
+  if (pestInterval) clearInterval(pestInterval);
+  document.querySelectorAll('.tile-card,.pest').forEach(el => el.remove());
+  document.getElementById('gameover-overlay').classList.remove('visible');
+  document.getElementById('phase-banner').classList.remove('visible');
+
+  // Reset state
+  score = 0; risk = 3; running = true;
+  lanes = [[], [], []];
+  pests = [];
+  laneCooldown = [0, 0, 0];
+  poolQueue = [];
+
+  // HUD
+  document.getElementById('hud-score').textContent = '0';
+  document.getElementById('hud-risk').textContent  = '❤️❤️❤️';
+  const plantBadge = document.getElementById('hud-plant');
+  plantBadge.textContent = currentUser.plant;
+  plantBadge.className   = 'hud-phase-badge ' + (currentUser.plant === 'P2' ? 'hud-plant-p2' : 'hud-plant-p3');
+
+  showScreen('game-screen');
+  applyPhase(0, false);
+
+  gameLoop = setInterval(tick, TICK_MS);
+}
+
+/* ─── SPAWN CARD ─────────────────────────────────────── */
+function spawnCard(lane) {
+  const data = nextItem();
+  const vp   = document.getElementById('viewport');
+
+  const el = document.createElement('div');
+  el.className = 'tile-card';
+  el.style.top  = '0px';   // temporary — will reposition after render
+  el.style.left = (-CARD_W) + 'px';
+  el.style.visibility = 'hidden'; // hide during measurement
+  el.innerHTML  = `<span>${esc(data.text)}</span><div class="tile-hint">A = Safe &nbsp;|&nbsp; D = Hazard</div>`;
+  vp.appendChild(el);
+
+  // Measure actual rendered height, then center on belt
+  const cardH  = el.offsetHeight;
+  const topPx  = LANE_Y[lane] + Math.max(0, (BELT_H - cardH) / 2);
+  el.style.top = topPx + 'px';
+  el.style.visibility = '';
+
+  lanes[lane].push({ div: el, x: -CARD_W, type: data.type });
+}
+
+/* ─── SPAWN PEST ─────────────────────────────────────── */
+function spawnPest() {
+  if (!running) return;
+  const vp  = document.getElementById('viewport');
+  const vpH = vp.clientHeight;
+  const el  = document.createElement('div');
+  el.className   = 'pest';
+  el.textContent = Math.random() > .5 ? '🐛 Bug!' : '🪰 Langaw!';
+
+  // Keep pest in upper 80% of viewport (above mobile buttons if any)
+  const maxY = Math.min(vpH - 80, 380);
+  const y    = Math.random() * (maxY - 40) + 20;
+  el.style.top  = y + 'px';
+  el.style.left = '-90px';
+
+  const vx = Math.random() * 1.1 + 1.2;
+  const vy = (Math.random() - .5) * 1.6;
+
+  const pestObj = { div: el, x: -90, y, vx, vy };
+  el.addEventListener('pointerdown', (e) => {
+    e.stopPropagation();
+    score += 25;
+    el.remove();
+    pests = pests.filter(p => p !== pestObj);
+  });
+
+  vp.appendChild(el);
+  pests.push(pestObj);
+}
+
+/* ─── KEY / TAP HANDLER ──────────────────────────────── */
+function handleKey(key) {
+  if (!running) return;
+
+  // Find the card with the largest x (furthest right = closest to player)
+  let targetLane = -1, maxX = -Infinity;
+  for (let l = 0; l < cfg().belts; l++) {
+    if (lanes[l].length > 0 && lanes[l][0].x > maxX) {
+      maxX = lanes[l][0].x;
+      targetLane = l;
+    }
+  }
+  if (targetLane === -1) return;
+
+  const target = lanes[targetLane][0];
+  const choice = (key === 'a') ? 'positive' : 'hazard';
+  if (target.type === choice) {
+    score += 15;
+    flashCard(target.div, true);
+  } else {
+    score  = Math.max(0, score - 10);
+    risk--;
+    updateRisk();
+    flashCard(target.div, false);
+  }
+  target.div.remove();
+  lanes[targetLane].shift();
+}
+
+window.addEventListener('keydown', e => {
+  if (!running) return;
+  const k = e.key.toLowerCase();
+  if (k === 'a' || k === 'd') { e.preventDefault(); handleKey(k); }
+});
+
+function flashCard(el, ok) {
+  el.style.background = ok ? '#d4edda' : '#fde8e6';
+  el.style.borderColor = ok ? 'var(--green)' : 'var(--red)';
+}
+
+/* ─── TICK ───────────────────────────────────────────── */
+function tick() {
+  if (!running) return;
+
+  document.getElementById('hud-score').textContent = score;
+
+  // Phase escalation
+  if (currentPhase < PHASES.length - 1 && score >= cfg().nextAt) {
+    applyPhase(currentPhase + 1, true);
+  }
+
+  const speed      = cfg().speed;
+  const gap        = cfg().gap;
+  const activeBelts = cfg().belts;
+  const vp = document.getElementById('viewport');
+  const vpW = vp.clientWidth || 900;
+
+  // ── Move cards ──
+  for (let l = 0; l < 3; l++) {
+    if (l >= activeBelts) {
+      // Deactivated lane — remove any stale cards
+      lanes[l].forEach(c => c.div.remove());
+      lanes[l] = [];
+      laneCooldown[l] = 0;
+      continue;
+    }
+
+    const laneCards = lanes[l];
+
+    for (let i = laneCards.length - 1; i >= 0; i--) {
+      const c = laneCards[i];
+      c.x += speed;
+      c.div.style.left = c.x + 'px';
+
+      if (c.x > vpW + 10) {
+        if (c.type === 'hazard') { risk--; updateRisk(); }
+        c.div.remove();
+        laneCards.splice(i, 1);
+      }
+    }
+
+    // Highlight lead card (rightmost = index 0 = oldest)
+    laneCards.forEach((c, i) => c.div.classList.toggle('active-target', i === 0));
+
+    // Spawn check
+    if (laneCooldown[l] > 0) {
+      laneCooldown[l]--;
+    } else {
+      const last = laneCards[laneCards.length - 1];
+      const canSpawn = !last || last.x >= (-CARD_W + CARD_W + gap);
+      if (canSpawn) {
+        spawnCard(l);
+        laneCooldown[l] = Math.ceil((CARD_W + gap) / speed);
+      }
+    }
+  }
+
+  // ── Move pests ──
+  const vpH = vp.clientHeight || 450;
+  for (let i = pests.length - 1; i >= 0; i--) {
+    const p = pests[i];
+    p.x += p.vx;
+    p.y += p.vy;
+    if (p.y < 10 || p.y > vpH - 80) p.vy *= -1;
+    p.div.style.left = p.x + 'px';
+    p.div.style.top  = p.y + 'px';
+    if (p.x > vpW + 10) {
+      risk--;
+      updateRisk();
+      p.div.remove();
+      pests.splice(i, 1);
+    }
+  }
+
+  if (risk <= 0 || score >= 300) gameOver();
+}
+
+/* ─── RISK DISPLAY ───────────────────────────────────── */
+function updateRisk() {
+  const el = document.getElementById('hud-risk');
+  el.textContent = risk > 0 ? '❤️'.repeat(risk) : '🚨 RECALL!';
+  if (risk <= 1) el.style.color = 'var(--red)';
+  else el.style.color = '';
+}
+
+/* ─── GAME OVER ──────────────────────────────────────── */
+function gameOver() {
+  running = false;
+  if (gameLoop)     clearInterval(gameLoop);
+  if (pestInterval)  clearInterval(pestInterval);
+  gameLoop = null; pestInterval = null;
+
+  // Submit to Google Form
+  if (currentUser) submitScore(currentUser.name, currentUser.plant, score);
+
+  const won = score >= 300;
+  document.getElementById('go-emoji').textContent  = won ? '🏆' : '🚨';
+  document.getElementById('go-title').textContent  = won ? 'AUDIT CLEARED!' : 'RECALL ISSUED!';
+  document.getElementById('go-title').style.color  = won ? 'var(--green)' : 'var(--red)';
+  document.getElementById('go-score').innerHTML    =
+    `Final Score: <strong>${score} puntos</strong>`;
+  document.getElementById('gameover-overlay').classList.add('visible');
+}
+
+/* ─── INIT ───────────────────────────────────────────── */
+// Pre-fetch leaderboard on load so it's warm
+window.addEventListener('load', () => {
+  fetchLeaderboard();
+});
+</script>
+</body>
+</html>
